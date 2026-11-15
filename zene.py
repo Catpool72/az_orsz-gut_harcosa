@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-A Sárkány szeme – zene a TVC hanggenerátorára (saját szerzemények).
+Az országút harcosa – zene a TVC hanggenerátorára (saját szerzemények).
 
 A TVC egyszólamú: négyszögjel, f = 195312,5 / (4096 - n) Hz (n: 12 bites osztó, $04/$05 port),
 hangerő 4 bit ($06 port 2-5. bit). A lejátszó képkockánként lép (50 Hz), a hangok rövid
@@ -25,33 +25,36 @@ def divisor(f):
 
 # --- a dalok: "hang:ütés" párok; a 'ütés' a dal alapegységének többszöröse (lehet tört)
 SONGS = {
-    # Címzene: lassú, balladaszerű dallam D dór hangsorban, 3/4, 18 képkocka/negyed (kb. 167 BPM-es triola-érzet nélkül)
-    'MUS_TITLE': (18, True, '''
-        D4:2 A4:1 | G4:1 F4:1 E4:1 | F4:2 D4:1 | A3:3 |
-        D4:2 F4:1 | G4:1 A4:1 C5:1 | A4:2 G4:1 | A4:3 |
-        D5:2 C5:1 | A4:1 G4:1 F4:1 | G4:2 A4:1 | E4:3 |
-        F4:1 E4:1 D4:1 | C4:2 E4:1 | D4:3 | R:3 |
-        A4:2 B4:1 | C5:2 A4:1 | G4:1 F4:1 G4:1 | A4:3 |
-        F4:2 G4:1 | A4:1 G4:1 F4:1 | E4:1 D4:1 E4:1 | C4:3 |
-        D4:1 E4:1 F4:1 | G4:2 A4:1 | F4:1 E4:1 C4:1 | D4:3 | R:3 |
+    # Címzene: országúti rock, E moll, 4/4, nyolcadok (9 képkocka). A riff az alaphangot
+    # (orgonapont) váltogatja a dallammal – az egyszólamú gépen ettől hallatszik "akkordnak".
+    'MUS_TITLE': (9, True, '''
+        E3:1 E3:1 G3:1 E3:1 A3:1 E3:1 B3:1 A3:1 | E3:1 E3:1 G3:1 E3:1 D4:1 B3:1 A3:1 G3:1 |
+        C3:1 C3:1 E3:1 C3:1 G3:1 C3:1 A3:1 G3:1 | D3:1 D3:1 F#3:1 D3:1 A3:1 D3:1 B3:1 A3:1 |
+        E3:1 E3:1 G3:1 E3:1 A3:1 E3:1 B3:1 A3:1 | E3:1 E3:1 G3:1 E3:1 D4:1 B3:1 A3:1 G3:1 |
+        C3:1 C3:1 E3:1 C3:1 G3:1 A3:1 B3:1 C4:1 | D4:1 D3:1 F#3:1 A3:1 D4:1 C4:1 B3:1 A3:1 |
+        E4:2 G4:2 B4:3 A4:1 | G4:2 F#4:2 E4:4 | C5:2 B4:2 A4:3 G4:1 | F#4:2 G4:2 A4:4 |
+        E4:2 G4:2 B4:3 D5:1 | C5:2 B4:2 A4:2 G4:2 | F#4:2 D4:2 E4:2 F#4:2 | E4:6 R:2 |
     '''),
-    # Harc: gyors, lüktető, A moll, nyolcadok (7 képkocka)
-    'MUS_FIGHT': (7, True, '''
-        A3:1 A3:1 E4:1 A3:1 C4:1 A3:1 E4:1 D4:1 |
-        A3:1 A3:1 E4:1 A3:1 F4:1 E4:1 D4:1 C4:1 |
-        G3:1 G3:1 D4:1 G3:1 B3:1 G3:1 D4:1 C4:1 |
-        E4:1 E4:1 D4:1 C4:1 B3:1 C4:1 D4:1 E4:1 |
-        A3:1 A3:1 E4:1 A3:1 C4:1 A3:1 E4:1 D4:1 |
-        F3:1 F3:1 C4:1 F3:1 A3:1 F3:1 C4:1 A3:1 |
-        E3:1 E3:1 B3:1 E3:1 G#3:1 B3:1 E4:1 D4:1 |
-        C4:1 B3:1 A3:1 G#3:1 A3:2 R:2 |
+    # Kézitusa és tűzharc: feszes, kromatikus A moll ostinato (6 képkocka)
+    'MUS_FIGHT': (6, True, '''
+        A2:1 A2:1 A3:1 A2:1 G3:1 A2:1 F3:1 E3:1 | A2:1 A2:1 A3:1 A2:1 Bb3:1 A3:1 G3:1 F3:1 |
+        D3:1 D3:1 D4:1 D3:1 C4:1 D3:1 Bb3:1 A3:1 | E3:1 E3:1 E4:1 E3:1 F4:1 E4:1 D4:1 C#4:1 |
+        A2:1 A2:1 A3:1 A2:1 G3:1 A2:1 F3:1 E3:1 | F3:1 F3:1 F4:1 F3:1 E4:1 D4:1 C4:1 Bb3:1 |
+        E3:1 F3:1 E3:1 D#3:1 E3:1 G#3:1 B3:1 D4:1 | C4:1 B3:1 A3:1 G#3:1 A3:2 R:2 |
     '''),
-    # Megnyert harc: rövid szignál
-    'MUS_WON': (6, False, 'A4:1 C5:1 E5:1 A5:3 R:1'),
-    # Halál: lassú, lefelé lépő
-    'MUS_DEATH': (16, False, 'A4:2 F4:1 D4:1 | C#4:2 D4:1 R:1 | Bb3:2 A3:4 | R:1'),
-    # Győzelem (400): fanfár
-    'MUS_WIN': (8, False, 'D4:1 D4:1 D4:1 A4:3 | F#4:1 A4:1 D5:4 | B4:1 C#5:1 D5:1 E5:1 F#5:2 E5:1 D5:4 R:2'),
+    # Autós csata: gyors, motorzúgásszerű oktávugrások E mollban, közte sziréna (5 képkocka)
+    'MUS_CAR': (5, True, '''
+        E2:1 E3:1 E2:1 E3:1 G2:1 G3:1 A2:1 A3:1 | E2:1 E3:1 E2:1 E3:1 Bb2:1 Bb3:1 A2:1 A3:1 |
+        E2:1 E3:1 E2:1 E3:1 G2:1 G3:1 A2:1 A3:1 | B2:1 B3:1 A2:1 A3:1 G2:1 G3:1 F#2:1 F#3:1 |
+        B4:2 E5:2 B4:2 E5:2 | B4:2 E5:2 G5:2 F#5:2 |
+        C3:1 C4:1 C3:1 C4:1 D3:1 D4:1 E3:1 E4:1 | B2:1 B3:1 B2:1 B3:1 E3:2 R:2 |
+    '''),
+    # Megnyert harc: rövid, felfelé futó szignál
+    'MUS_WON': (6, False, 'E4:1 G4:1 B4:1 E5:3 R:1'),
+    # Halál: lassú, lefelé lépő, mint a kifulladó motor
+    'MUS_DEATH': (16, False, 'E4:2 D4:1 B3:1 | C4:2 A3:1 R:1 | F#3:2 E3:4 | R:1'),
+    # Győzelem (380: hazaérsz Új Reménybe): G-dúr fanfár
+    'MUS_WIN': (8, False, 'G4:1 G4:1 G4:1 D5:3 | B4:1 C5:1 D5:2 E5:2 | D5:1 C5:1 B4:1 A4:1 G4:2 B4:1 D5:1 G5:4 R:2'),
 }
 
 def parse(spec):
@@ -64,7 +67,7 @@ def parse(spec):
 def build(path):
     notes = sorted({n for _, _, s in SONGS.values() for n, _ in parse(s) if n != 'R'}, key=freq)
     idx = {n: i + 1 for i, n in enumerate(notes)}
-    o = ['; generálta a zene.py – saját szerzemények (A Sárkány szeme TVC)',
+    o = ['; generálta a zene.py – saját szerzemények (Az országút harcosa TVC)',
          'NOTETAB:                  ; hang -> 12 bites osztó (f = 195312,5 / (4096 - n))']
     for n in notes:
         o.append(f'        dw {divisor(freq(n))}   ; {n} {freq(n):.1f} Hz')

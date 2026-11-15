@@ -1712,7 +1712,12 @@ op_fight:
         ldir
         pop hl
         ld hl,MUS_FIGHT
-        call music_play
+        ld a,(f_mode)           ; autos csata: sajat zene
+        and 3
+        cp 3
+        jr nz,.mu
+        ld hl,MUS_CAR
+.mu:    call music_play
         ld hl,MSG_TOFIGHT       ; elobb a fejezet szoveget el kell tudni olvasni
         call msg_wait
         ; kepernyo

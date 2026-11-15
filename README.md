@@ -45,6 +45,11 @@ python3 rules.py                                         # a szabályok ellenőr
   patkányharapás (74, 132). A készletek fogynak (a benzinkannát a tankba öntöd, a pótkereket felteszed…).
 - A PÁNCÉLZAT nullára csökkenése is halál. A győzelem a 380-as fejezet.
 
+## Zene
+Saját szerzemények a TVC egyszólamú hanggenerátorára (`zene.py` → `zene.inc`, lejátszó: `zene.asm`): országúti rock
+címzene (E moll), feszes A moll ostinato a kézitusához és a tűzharchoz, külön gyors, „motorzúgásos” zene az autós
+csatákhoz, szignál a megnyert harcra, a halálra és a győzelemre (380). Előhallgatás: `python3 zene.py zene.wav`.
+
 ## Javítások a könyv szövegén (`eszkozok/konyv.py`, JAVITAS)
 - 74: kimaradt a patkányharapás ága („…lapozz a 275-re”) – a 132-es fejezet párja alapján pótolva.
 - 126, 130, 260, 324: elírások. 282: a könyvben az Oldalkocsis motor TŰZEREJE 2; a 220-as párja alapján 9.

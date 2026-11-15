@@ -137,7 +137,7 @@ f_plost     equ VARS+175        ; a kezitusaban elvesztett ELETERO
 f_m0        equ VARS+176        ; 4: az ellenfelek kezdeti ELETEREJE / PANCELZATA
 f_dmg       equ VARS+180        ; az utolso sebzes
 GAME_LEN    equ 184-18
-shop_items  equ VARS+364        ; 12 x 2 (nem resze a mentesnek)
+shop_items  equ VARS+380        ; 12 x 2 (nem resze a mentesnek; a zene valtozoi VARS+368..374)
 lm_ptr      equ VARS+184        ; 12 x 2
 lm_val      equ VARS+208        ; 12
 NAME_LEN    equ 32
