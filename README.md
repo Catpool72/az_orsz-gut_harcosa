@@ -6,8 +6,9 @@ TVC-átirata Z80 gépi kódban, **A Sárkány szeme** motorjára építve
 
 - **Lemezes változat:** a teljes könyv (380 fejezet, 32 rajz, előzmények), 720 KB-os VT-DOS lemezkép
   (TVC 64K/64K+ + HBF). Indítás: `LOAD "KALAND"` (önindító). Mentés/visszatöltés a Kalandlapon (Fel/Le).
-- **Színes címlap:** indításkor a TVC 16 színű módjában (a teljes képernyőn, `cimlap/cimlap.png`, 3 részben a lemezről: `C01`–`C03.CAS`),
-  Szóköz/Tűz után a szöveges címlap következik.
+- **Címlap:** indításkor fekete-fehér, teljes képernyős plakát a játék 2 színű módjában (`cimlap/cimlap.png`,
+  512×240 raszterrel, az alcím a játék fontjával; 3 részben a lemezről: `C01`–`C03.CAS`), Szóköz/Tűz után a
+  szöveges címlap. A színes változatok (`cimlap/szines_*.png`) a 16 színű módhoz (`CVMODE=2`) maradtak meg.
 
 > **Szerzői jog:** a könyv szövege és Kevin Bulmer illusztrációi a szerzők és a kiadó tulajdona
 > (magyar fordítás: Forray Katalin). **Ebben a tárolóban nincsenek benne**: a `konyv/`, `ill/`, `lemez/`

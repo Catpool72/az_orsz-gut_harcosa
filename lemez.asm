@@ -198,17 +198,19 @@ slot_addr:
 
     IFDEF COVER
 ;-----------------------------------------------------------------------------
-; cover: szines cimlap 16 szinu modban (128x240), harom reszben a lemezrol (C01..C03.CAS,
+; cover: cimlap a 2 szinu (vagy CVMODE=2: 16 szinu) modban, harom reszben a lemezrol (C01..C03.CAS,
 ; egyenkent 80 sor x 64 bajt); Szokoz/Tuz tovabb, Esc kilepes
 ;-----------------------------------------------------------------------------
 COVER_PART  equ 80*64
 cover:  call cls
+    IF CVMODE
         ld a,COVER_BORDER
         ld (vid_border),a
         out ($00),a
-        ld a,2
+        ld a,CVMODE             ; 2: 16 szinu kep (a 0: a jatek 2 szinu modja)
         ld (vid_mode),a
         out ($06),a
+    ENDIF
         ld hl,MUS_TITLE
         call music_play
         ld de,VRAM
