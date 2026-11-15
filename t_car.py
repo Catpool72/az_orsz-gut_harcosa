@@ -1,0 +1,13 @@
+from play import Play
+p = Play('car'); p.start()
+p.sec(49, 0, 's49')
+p.key('space', gap=100); p.shot('kerdes')
+p.key('up', gap=100); p.shot('raketa')
+p.key('space', gap=100); p.shot('utan')
+p.sec(115, 0, 's115'); p.key('space', gap=100)
+for i in range(6): p.key('space', gap=70)
+p.shot('homokfutok')
+for i in range(30): p.key('space', gap=50)
+p.shot('homok_vege')
+p.dump('g_cnt', 6); p.dump('g_fp', 4); p.dump('cur_sec', 2)
+p.run()

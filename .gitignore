@@ -1,0 +1,12 @@
+build*/
+__pycache__/
+harness/tvcsim
+*.ppm
+shots/
+test_*.txt
+# a könyv szövege és rajzai (szerzői jog): az epubból készül, nem kerül a nyilvános tárolóba
+konyv/
+ill/
+img_sections.json
+lemez/
+docs/
