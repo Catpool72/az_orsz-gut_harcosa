@@ -195,6 +195,9 @@ start:
         ld (rng),a
         ld (rng+1),a
         call cls
+    IFDEF COVER
+        call cover              ; szines cimlap (16 szinu mod)
+    ENDIF
         ; fall through
 
 ;-----------------------------------------------------------------------------

@@ -23,6 +23,7 @@ border_on:
         out ($00),a
         ret
 bv_save:    db 0
+vid_border: db BORDER_COL
 
 ; disk_load: DE = nev, HL = cel, BC = hossz -> A = 0 / hibakod
 disk_load:
@@ -67,11 +68,11 @@ disk_done:                      ; kozos befejezes: DI, lapozas, verem, video
         ld (P_SAVE),a
         out ($02),a
         ld sp,(dl_sp)
-        xor a                   ; a ROM a videomodot, a palettat es a keretet is allithatta
+        ld a,(vid_mode)         ; a ROM a videomodot, a palettat es a keretet is allithatta
         out ($06),a
         ld a,(bv_save)          ; a ROM keretvaltozoja vissza (kilepeskor a BASIC ezt kapja)
         ld (BORDERV),a
-        ld a,BORDER_COL : out ($00),a
+        ld a,(vid_border) : out ($00),a
         push bc
         call apply_pal
         pop bc
@@ -194,6 +195,59 @@ slot_addr:
         ld h,a
         ld l,CACHE & 255
         ret
+
+    IFDEF COVER
+;-----------------------------------------------------------------------------
+; cover: szines cimlap 16 szinu modban (128x240), harom reszben a lemezrol (C01..C03.CAS,
+; egyenkent 80 sor x 64 bajt); Szokoz/Tuz tovabb, Esc kilepes
+;-----------------------------------------------------------------------------
+COVER_PART  equ 80*64
+cover:  call cls
+        ld a,COVER_BORDER
+        ld (vid_border),a
+        out ($00),a
+        ld a,2
+        ld (vid_mode),a
+        out ($06),a
+        ld hl,MUS_TITLE
+        call music_play
+        ld de,VRAM
+        ld a,1
+.p:     push af
+        push de
+        ld c,'C'
+        call set_name
+        ld hl,IMG_STAGE
+        ld bc,COVER_PART
+        call disk_load_retry
+        ld hl,IMG_STAGE         ; U2 -> U3
+        ld de,IMG_BUF
+        ld bc,COVER_PART
+        ldir
+        ld a,MAP_DRAW
+        call setmap
+        pop de
+        ld hl,IMG_BUF
+        ld bc,COVER_PART
+        ldir                    ; -> VRAM (DE a kovetkezo resz elejere lep)
+        ld a,MAP_LOGIC
+        call setmap
+        pop af
+        inc a
+        cp 4
+        jr c,.p
+.w:     call wait_key
+        bit 5,a : jp nz,quit
+        bit 4,a : jr z,.w
+        xor a
+        ld (vid_mode),a
+        out ($06),a
+        ld a,BORDER_COL
+        ld (vid_border),a
+        out ($00),a
+        call apply_pal
+        jp cls
+    ENDIF
 
 ; load_image: A = rajz (1..N) -> HL = IMG_STAGE (a rajz betoltve)
 load_image:

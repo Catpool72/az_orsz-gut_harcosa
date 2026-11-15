@@ -150,6 +150,11 @@ static void shot(const char *name) {
                     uint8_t o[3]; rgb(pal[(d >> (7 - i)) & 1], o);
                     memcpy(&line[(xb * 8 + i) * 3], o, 3);
                 }
+            } else if (vmode >= 2) {    /* 16 szinu mod: bal pont = d & $AA (>>1), jobb = d & $55, 0I0G0R0B */
+                for (int i = 0; i < 2; i++) {
+                    uint8_t o[3]; rgb(i ? (d & 0x55) : ((d & 0xAA) >> 1), o);
+                    for (int k = 0; k < 4; k++) memcpy(&line[((xb * 2 + i) * 4 + k) * 3], o, 3);
+                }
             } else
             for (int i = 0; i < 4; i++) {
                 int c = vmode == 1 ? (((d >> (3 - i)) & 1) * 2 + ((d >> (7 - i)) & 1)) : 0;

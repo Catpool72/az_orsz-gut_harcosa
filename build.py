@@ -316,7 +316,7 @@ def main():
     zene.build(os.path.join(a.out, 'zene.inc'))
 
     def assemble():
-        r = subprocess.run([SJ, '--nologo'] + (['-DDISK'] if a.disk else []) + (['-DNO_PALSWITCH'] if meta.get('fixed_palette') else []) + ([f"-DBORDER0={meta['border']}"] if 'border' in meta else []) + (['-DTEXT_GAP'] if meta.get('text_gap') else []) + [ f'--sym={a.out}/kaland.sym', f'--lst={a.out}/kaland.lst',
+        r = subprocess.run([SJ, '--nologo'] + (['-DDISK'] if a.disk else []) + (['-DNO_PALSWITCH'] if meta.get('fixed_palette') else []) + ([f"-DBORDER0={meta['border']}"] if 'border' in meta else []) + (['-DTEXT_GAP'] if meta.get('text_gap') else []) + (['-DCOVER', '-DCOVER_BORDER=0'] if a.disk and os.path.exists(COVER) else []) + [ f'--sym={a.out}/kaland.sym', f'--lst={a.out}/kaland.lst',
                             f'-I{a.out}', f'-I{HERE}', os.path.join(HERE, 'kaland.asm')],
                            capture_output=True, text=True, cwd=a.out)
         syms_ = {}
@@ -412,6 +412,29 @@ def fat12_720k(files, label='ORSZAGUT'):
         o = SS * (RES + f * SPF); img[o:o + len(fb)] = fb
     return bytes(img), (ncl - (nxt - 2)) * SS * SPC
 
+COVER = os.path.join(HERE, 'cimlap', 'cimlap.png')
+COVER_W = 58                    # a címlap szélessége 16 színű pontban (128-ból; a 240 sorhoz arányos ~51, kissé szélesítve)
+
+def cover_parts():
+    """a színes címlap a TVC 16 színű módjára: 128x240 pont, bájtonként 2 pont
+    (bal = a 0I0G0R0B szín 1-gyel balra tolva, jobb = 0I0G0R0B); 3 x 80 sor"""
+    pal = []
+    for v in range(16):                              # IGRB: bit3 I, bit2 G, bit1 R, bit0 B
+        lv = 255 if v & 8 else 170
+        pal.append(((v >> 1 & 1) * lv, (v >> 2 & 1) * lv, (v & 1) * lv))
+    pal[8] = (85, 85, 85)                            # fényes fekete = sötétszürke
+    pimg = Image.new('P', (1, 1)); pimg.putpalette(sum(pal, ()) + (0,) * (768 - 48))
+    src = Image.open(COVER).convert('RGB').resize((COVER_W, 240), Image.BOX)
+    q = np.array(src.quantize(palette=pimg, dither=Image.Dither.NONE))
+    scr = np.zeros((240, 128), np.uint8)
+    x0 = (128 - COVER_W) // 2
+    scr[:, x0:x0 + COVER_W] = q
+    port = lambda v: (v >> 3 & 1) << 6 | (v >> 2 & 1) << 4 | (v >> 1 & 1) << 2 | (v & 1)
+    data = bytes((port(scr[y, 2 * x]) << 1) | port(scr[y, 2 * x + 1]) for y in range(240) for x in range(64))
+    prev = np.array([[pal[v] for v in row] for row in scr], np.uint8)
+    Image.fromarray(prev).resize((512, 480), Image.NEAREST).save(os.path.join(HERE, 'cimlap', 'cimlap_tvc.png'))
+    return [data[i * 5120:(i + 1) * 5120] for i in range(3)]
+
 def build_disk(a, emit, assemble, comp, order, make_img, sect_img_page, chunk_data):
     emit(len(order), 0, 2)
     r, s = assemble()
@@ -431,6 +454,9 @@ def build_disk(a, emit, assemble, comp, order, make_img, sect_img_page, chunk_da
     imgs = sorted(sect_img_page)
     for i, n in enumerate(imgs):
         files.append((f'I{i + 1:02d}.CAS', cas_bytes(make_img(sect_img_page[n]))))
+    if os.path.exists(COVER):
+        for i, part in enumerate(cover_parts()):
+            files.append((f'C{i + 1:02d}.CAS', cas_bytes(part)))
     for name, data in files:
         open(os.path.join(dist, name), 'wb').write(data)
     dsk, free = fat12_720k(files)

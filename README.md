@@ -6,7 +6,8 @@ TVC-átirata Z80 gépi kódban, **A Sárkány szeme** motorjára építve
 
 - **Lemezes változat:** a teljes könyv (380 fejezet, 32 rajz, előzmények), 720 KB-os VT-DOS lemezkép
   (TVC 64K/64K+ + HBF). Indítás: `LOAD "KALAND"` (önindító). Mentés/visszatöltés a Kalandlapon (Fel/Le).
-- **Kazettás demó:** 59 fejezet és 2 rajz, `LOAD` után önindító.
+- **Színes címlap:** indításkor a TVC 16 színű módjában (`cimlap/cimlap.png`, 3 részben a lemezről: `C01`–`C03.CAS`),
+  Szóköz/Tűz után a szöveges címlap következik.
 
 > **Szerzői jog:** a könyv szövege és Kevin Bulmer illusztrációi a szerzők és a kiadó tulajdona
 > (magyar fordítás: Forray Katalin). **Ebben a tárolóban nincsenek benne**: a `konyv/`, `ill/`, `lemez/`
@@ -18,7 +19,6 @@ Kell: Python 3 (Pillow, NumPy) és [sjasmplus](https://github.com/z00m128/sjasmp
 ```
 python3 eszkozok/konyv.py Az_Orszagut_Harcosa.epub      # -> konyv/orszagut.json, konyv/orszagut.txt, ill/, img_sections.json
 SJASMPLUS=/út/a/sjasmplus python3 build.py --disk       # -> build_disk/orszagut.dsk (+ build_disk/lemez/*.CAS)
-SJASMPLUS=/út/a/sjasmplus python3 build.py --images 2   # -> build/kaland.cas (kazettás demó)
 python3 rules.py                                         # a szabályok ellenőrzése (minden cél valódi lapozási cél-e)
 ```
 

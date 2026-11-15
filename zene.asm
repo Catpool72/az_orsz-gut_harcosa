@@ -25,7 +25,8 @@ music_stop:
 music_silence:
         xor a
         ld (mus_amp),a
-        out ($06),a             ; 2 szinu mod, hangero 0
+        ld a,(vid_mode)
+        out ($06),a             ; videomod, hangero 0
         ld a,$FF
         out ($04),a
         ld a,$0F                ; osztó $FFF: all az oszcillator
@@ -88,8 +89,15 @@ music_tick:
 .set:   ld (mus_amp),a
 .out:   ld a,(mus_amp)
         add a,a
-        add a,a                 ; 2-5. bit; a 0-1. bit a videomod (0)
+        add a,a                 ; 2-5. bit; a 0-1. bit a videomod
+        push bc
+        ld b,a
+        ld a,(vid_mode)
+        or b
+        pop bc
         out ($06),a
         ret
+
+vid_mode:   db 0                ; a videomod (0: 2 szinu, 2: 16 szinu cimlap)
 
         include "zene.inc"
