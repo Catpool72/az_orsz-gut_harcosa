@@ -413,7 +413,7 @@ def fat12_720k(files, label='ORSZAGUT'):
     return bytes(img), (ncl - (nxt - 2)) * SS * SPC
 
 COVER = os.path.join(HERE, 'cimlap', 'cimlap.png')
-COVER_W = 58                    # a címlap szélessége 16 színű pontban (128-ból; a 240 sorhoz arányos ~51, kissé szélesítve)
+COVER_W = 128                   # a címlap szélessége 16 színű pontban: a teljes képernyő (az arány nem marad meg)
 
 def cover_parts():
     """a színes címlap a TVC 16 színű módjára: 128x240 pont, bájtonként 2 pont
